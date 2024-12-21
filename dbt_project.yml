@@ -1,4 +1,3 @@
-
 name: 'dbt_scooters'
 version: '1.0.0'
 profile: 'dbt_scooters'
