@@ -9,6 +9,8 @@ sources:
         description: "Scooter trips"
       - name: "users"
         description: "Users of scooter service"
+      - name: "events"
+        description: "Users events"
 
 models:
   - name: "trips_prep"
@@ -38,6 +40,11 @@ models:
 
   - name: "trips_users"
     description: "Prepared trips enriched with users data"
+    config:
+      materialized: "incremental"
+
+  - name: "events_clean"
+    description: "Cleaning events table from duplicates"
     config:
       materialized: "incremental"
   
