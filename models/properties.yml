@@ -38,6 +38,12 @@ models:
   - name: "parking_finish_stat"
     description: "Trip finish parking statistics by 10 m hexagons"
 
+  - name: "companies"
+    description: "Scooters models aggregated info per company"
+
+  - name: "companies_trips"
+    description: "Trips statistics per company"
+
   - name: "trips_concurrency"
     description: "Number of concurent trips in time"
     config:
