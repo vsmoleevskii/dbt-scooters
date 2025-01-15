@@ -7,3 +7,6 @@ seeds:
       delimiter: ","
   - name: "event_types"
     description: "Event types statuses"
+  - name: "age_groups"
+    description: "Users devided by age groups"
+    

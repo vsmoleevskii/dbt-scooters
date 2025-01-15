@@ -75,6 +75,8 @@ models:
 
   - name: "events_stat"
     description: "How many users reject due to long search"
+  - name: "trips_age_groups"
+    description: "Users trips analytics based on age groups"
   
   - name: "trips_stat_daily"
     description: "Daily agreggated trips information"
