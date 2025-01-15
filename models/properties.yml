@@ -67,6 +67,14 @@ models:
     description: "Cleaning events table from duplicates"
     config:
       materialized: "incremental"
+
+  - name: "events_full"
+    description: "Table with all events joined with event types"
+    config:
+      materialized: "view"
+
+  - name: "events_stat"
+    description: "How many users reject due to long search"
   
   - name: "trips_stat_daily"
     description: "Daily agreggated trips information"
