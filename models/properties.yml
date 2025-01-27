@@ -64,9 +64,11 @@ models:
       materialized: "incremental"
 
   - name: "events_clean"
-    description: "Cleaning events table from duplicates"
+    description: "User events without duplicates"
     config:
       materialized: "incremental"
+      strategy: "merge"
+      unique_key: ["user_id", "timestamp", "type_id"]
 
   - name: "events_full"
     description: "Table with all events joined with event types"
