@@ -1,6 +1,12 @@
 version: 2
 
 macros:
+  - name: "create_role"
+    description: "Create role for users as dbt operation"
+    arguments:
+      - name: "name"
+        type: "string"
+        description: "Role name"
   - name: "updated_at"
     description: "Columns which represents timestamp of the last update"
   - name: "date_in_moscow"
@@ -20,4 +26,18 @@ macros:
         description: "Column with geometry data"
       - name: "grid"
         type: "integer"
-        description: "Size of grid hexagon" 
+        description: "Size of grid hexagon"
+      
+  - name: "generate_schema_name"
+    description: |
+      Simplify custom schema name generation using only provided name.
+      dbt uses this macro automatically, there is no need to run it manually.
+    arguments:
+      - name: "custom_schema_name"
+        type: "string"
+        description: "Custom name of schema defined in project configuration"
+      - name: "node"
+        type: "node"
+        description: "dbt node to generate schema name for (not in use)"
+    
+  

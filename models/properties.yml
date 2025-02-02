@@ -49,14 +49,7 @@ models:
     config:
       materialized: "incremental"
 
-  - name: "revenue_daily"
-    description: "Aggregated trip's revenue per day"
-    config:
-      materialized: "incremental"
-      strategy: "merge"
-      unique_key: [date]
-      on_schema_change: append_new_columns
-      full_refresh: false
+
 
   - name: "trips_users"
     description: "Prepared trips enriched with users data"
