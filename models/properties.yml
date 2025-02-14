@@ -40,6 +40,9 @@ models:
 
   - name: "trips_age_daily"
     description: "Average daily trips per age category "
+    data_tests:
+      - unique:
+          column_name: "date::text || age::text"
 
   - name: "trips_age_daily_stat"
     description: "Average trips and revenue per each age category"
@@ -60,6 +63,11 @@ models:
 
   - name: "companies_trips"
     description: "Trips statistics per company"
+    columns:
+      - name: "company"
+        description: "Scooters manufacturing company"
+        data_tests:
+          - unique
 
   - name: "trips_concurrency"
     description: "Number of concurent trips in time"
