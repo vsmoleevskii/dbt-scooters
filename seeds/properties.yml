@@ -9,4 +9,17 @@ seeds:
     description: "Event types statuses"
   - name: "age_groups"
     description: "Users devided by age groups"
-    
+    columns:
+      - name: "group"
+        description: "Age group name for report"
+        data_tests: [ "unique_not_null" ]
+      - name: "age_start"
+        description: "Group starting age"
+        data_tests: ["unique_not_null"]
+      - name: "age_end"
+        description: "Group ending age"
+        data_tests: ["unique_not_null"]
+   
+
+
+   
