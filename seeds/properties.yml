@@ -2,11 +2,22 @@ version: 2
 
 seeds:
   - name: "scooters"
-    description: "Scooter models info and statistics"
+    description: >
+      Scooter models information and park statistics by model.
+      Includes information about the manufacturing company.
+      Data received from the service team and uploaded by Mark.
+      Data is current as of summer 2023.
     config:
       delimiter: ","
   - name: "event_types"
-    description: "Event types statuses"
+    description: "{{ doc('event_types') }}"
+    columns: 
+      - name: "type_id" 
+        description: >
+          A unique identifier for each event type
+      - name: "type"
+        description: >
+          The description of the event type
   - name: "age_groups"
     description: "Users devided by age groups"
     columns:
