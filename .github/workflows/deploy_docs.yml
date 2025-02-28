@@ -15,9 +15,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          # Explicitly fetch all branches
-          fetch-depth: 0
 
       - name: Install requirements
         run: pip install -r requirements.txt
@@ -32,7 +29,7 @@ jobs:
 
       - name: Prepare site files
         run: |
-          mkdir -p site
+          mkdir site
           cp target/index.html site/
           cp target/manifest.json site/
           cp target/catalog.json site/
@@ -41,6 +38,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./site
-          # Explicitly create gh-pages branch if it doesn't exist
-          keep_files: true
+          publish_dir: site
