@@ -29,14 +29,13 @@ jobs:
 
       - name: Prepare site files
         run: |
-          mkdir site
-          cp target/index.html site/
-          cp target/manifest.json site/
-          cp target/catalog.json site/
-          touch site/.nojekyll  # Add this line to create a .nojekyll file
+          mkdir -p site
+          cp -r target/. site/
+          touch site/.nojekyll  # This prevents GitHub Pages from using Jekyll
 
-      - name: Commit site for GitHub Pages
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: site
+          force_orphan: true  # Creates a clean gh-pages branch
