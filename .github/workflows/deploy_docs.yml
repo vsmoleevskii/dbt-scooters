@@ -1,23 +1,20 @@
-name: Deploy dbt docs to GitHub Pages
+name: Deploy dbt docs (Data Catalog) to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [master]
 
 permissions:
   contents: write
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
 
       - name: Install requirements
         run: pip install -r requirements.txt
@@ -25,39 +22,20 @@ jobs:
       - name: Prepare connection profile
         run: cp profiles.example.yml profiles.yml
 
-      - name: Generate dbt docs
+      - name: Generate docs
         run: dbt docs generate
         env:
           DBT_ENV_SECRET_PASSWORD: ${{ secrets.DBT_ENV_SECRET_PASSWORD }}
-      
-      - name: Debug - Check what was generated
-        run: |
-          echo "Contents of target directory:"
-          ls -la target/
 
-      # Use GitHub's official Pages action
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
-
-      - name: Manual Git deploy to gh-pages
+      - name: Prepare site files
         run: |
-          # Configure git
-          git config --global user.name "GitHub Actions Bot"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # Create and prepare gh-pages branch
-          git checkout --orphan gh-pages
-          git reset --hard
-          git rm -rf --ignore-unmatch .
-          
-          # Copy documentation files
-          mkdir -p ./
-          cp -r target/index.html ./
-          cp -r target/catalog.json ./
-          cp -r target/manifest.json ./
-          touch .nojekyll
-          
-          # Add, commit and push
-          git add .nojekyll index.html catalog.json manifest.json
-          git commit -m "Deploy dbt docs to GitHub Pages"
-          git push -f origin gh-pages
+          mkdir site
+          cp target/index.html site/
+          cp target/manifest.json site/
+          cp target/catalog.json site/
+
+      - name: Commit site for GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: site
