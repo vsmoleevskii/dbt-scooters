@@ -1,3 +1,8 @@
+---
+layout: default
+title: Overview
+---
+
 {% docs __overview__ %}
 
 # Katalkin Data Warehouse Catalog
