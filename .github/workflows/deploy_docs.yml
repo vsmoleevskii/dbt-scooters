@@ -4,8 +4,11 @@ on:
   push:
     branches: [main]
 
+# Make sure permissions are explicitly set
 permissions:
-  contents: write
+  contents: write  # This is needed to push to gh-pages branch
+  pages: write     # This is needed for GitHub Pages
+  id-token: write  # This is needed for GitHub Pages authentication
 
 jobs:
   build:
@@ -15,6 +18,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for proper branch creation
 
       - name: Install requirements
         run: pip install -r requirements.txt
@@ -32,11 +37,19 @@ jobs:
           mkdir -p site
           cp -r target/. site/
           touch site/.nojekyll
+          
+      # Debug step to verify content is ready for deployment
+      - name: Debug - list files to deploy
+        run: |
+          echo "Files to deploy:"
+          ls -la site/
 
-      - name: Deploy
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: site
+          publish_dir: ./site
           enable_jekyll: false
-          force_orphan: true
+          force_orphan: true  # Creates a fresh gh-pages branch
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
