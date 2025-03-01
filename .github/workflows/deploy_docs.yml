@@ -1,25 +1,23 @@
-name: Deploy dbt docs (Data Catalog) to GitHub Pages
+name: Deploy dbt docs to GitHub Pages
 
 on:
   push:
     branches: [main]
 
-# Make sure permissions are explicitly set
 permissions:
-  contents: write  # This is needed to push to gh-pages branch
-  pages: write     # This is needed for GitHub Pages
-  id-token: write  # This is needed for GitHub Pages authentication
+  contents: write
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          fetch-depth: 0  # Fetch all history for proper branch creation
+          python-version: '3.10'
 
       - name: Install requirements
         run: pip install -r requirements.txt
@@ -27,29 +25,39 @@ jobs:
       - name: Prepare connection profile
         run: cp profiles.example.yml profiles.yml
 
-      - name: Generate docs
+      - name: Generate dbt docs
         run: dbt docs generate
         env:
           DBT_ENV_SECRET_PASSWORD: ${{ secrets.DBT_ENV_SECRET_PASSWORD }}
-
-      - name: Prepare site files
+      
+      - name: Debug - Check what was generated
         run: |
-          mkdir -p site
-          cp -r target/. site/
-          touch site/.nojekyll
+          echo "Contents of target directory:"
+          ls -la target/
+
+      # Use GitHub's official Pages action
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
+      - name: Manual Git deploy to gh-pages
+        run: |
+          # Configure git
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-      # Debug step to verify content is ready for deployment
-      - name: Debug - list files to deploy
-        run: |
-          echo "Files to deploy:"
-          ls -la site/
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./site
-          enable_jekyll: false
-          force_orphan: true  # Creates a fresh gh-pages branch
-          user_name: 'github-actions[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
+          # Create and prepare gh-pages branch
+          git checkout --orphan gh-pages
+          git reset --hard
+          git rm -rf --ignore-unmatch .
+          
+          # Copy documentation files
+          mkdir -p ./
+          cp -r target/index.html ./
+          cp -r target/catalog.json ./
+          cp -r target/manifest.json ./
+          touch .nojekyll
+          
+          # Add, commit and push
+          git add .nojekyll index.html catalog.json manifest.json
+          git commit -m "Deploy dbt docs to GitHub Pages"
+          git push -f origin gh-pages
