@@ -31,17 +31,20 @@ jobs:
       - name: Prepare connection profile
         run: cp profiles.example.yml profiles.yml
 
+      - name: Prepare Jekyll-compatible overview
+        run: |
+          # Create a copy of the original overview file
+          cp macros/overview.md macros/overview_dbt.md
+          
+          # Modify the file for GitHub Pages
+          sed -i '1i---\nlayout: default\ntitle: Overview\n---' macros/overview.md
+          sed -i 's/{% docs overview %}//' macros/overview.md
+          sed -i 's/{% enddocs %}//' macros/overview.md
+
       - name: Generate docs
         run: dbt docs generate
         env:
           DBT_ENV_SECRET_PASSWORD: ${{ secrets.DBT_ENV_SECRET_PASSWORD }}
-
-      - name: Prepare Jekyll-compatible overview
-        run: |
-          # Convert dbt docs overview to Jekyll-compatible format
-          sed -i '1i---\nlayout: default\ntitle: Overview\n---' macros/overview.md
-          sed -i '/{% docs overview %}/d' macros/overview.md
-          sed -i '/{% enddocs %}/d' macros/overview.md
 
       - name: Prepare site files
         run: |
@@ -50,6 +53,11 @@ jobs:
           cp target/manifest.json site/
           cp target/catalog.json site/
           cp macros/overview.md site/README.md
+
+      - name: Restore original overview file
+        run: |
+          # Restore the original file for dbt docs
+          mv macros/overview_dbt.md macros/overview.md
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
