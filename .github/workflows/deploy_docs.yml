@@ -33,6 +33,7 @@ jobs:
           cp target/index.html site/
           cp target/manifest.json site/
           cp target/catalog.json site/
+          touch site/.nojekyll  # Add this line to create a .nojekyll file
 
       - name: Commit site for GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
