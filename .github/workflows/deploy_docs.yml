@@ -1,4 +1,4 @@
-name: Deploy dbt docs (Data Catalog) to GitHub Pages
+name: 🚀 Deploy dbt project to production with Data Catalog
 
 on:
   push:
@@ -6,90 +6,47 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
-  build:
+  deploy:
+    name: 🚀 Deploy dbt project
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      DBT_ENV_SECRET_PASSWORD: ${{ secrets.DBT_ENV_SECRET_PASSWORD }}
 
     steps:
-      - name: Checkout repository
+      - name: ⬇️ Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.8'
-
-      - name: Install requirements
+      - name: ⚙️ Install requirements and prepare profiles
         run: |
-          python -m pip install --upgrade pip
           pip install -r requirements.txt
-          
-      - name: Prepare connection profile
-        run: cp profiles.example.yml profiles.yml
+          dbt deps
+          cp profiles.example.yml profiles.yml
 
-      - name: Prepare GitHub Pages files
+      - name: ✅ Run linter
+        run: sqlfluff lint
+
+      - name: ⬇️ Checkout previous state
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: target_state
+
+      - name: 🏗️ Build production environment
+        run: dbt build -s state:modified+ --state target_state --target prod
+
+      - name: 🗃️ Generate Data Catalog
         run: |
-          # Create a site directory
-          mkdir -p site
+          dbt docs generate --target prod
+          mkdir docs
+          cp target/index.html docs/
+          cp target/manifest.json docs/
+          cp target/catalog.json docs/
 
-          # Create README.md for GitHub Pages
-          cat > site/README.md << 'EOF'
-          ---
-          layout: default
-          title: Overview
-          ---
-
-          # Katalkin Data Warehouse Catalog
-
-          ![Katalkin logo](https://content.inzhenerka-cloud.com/assets/art/katalkin-logo.png)
-
-          Welcome to the Data Warehouse Catalog.
-          This website provides a comprehensive guide to our data warehouse, focusing on key datasets, models,
-          and documentation to ensure seamless access and understanding across our organization.
-
-          ## Purpose of the Data Warehouse Catalog
-          The Catalog serves as a central repository for all data projects within our data warehouse,
-          offering a unified view of our data landscape.
-          It is designed to enhance data accessibility, promote data literacy, and support effective data governance.
-          By documenting data sources, models, and their respective transformations, the catalog ensures that
-          all stakeholders can easily find, understand, and use the data they need.
-
-          ## Key Components
-
-          - **Datasets:** Core datasets are documented within the catalog, detailing their origins, usage, and transformations.
-          This ensures transparency and helps users understand the context and relevance of the data.
-          - **Models:** Data models are the backbone of our data transformation processes.
-          The catalog includes comprehensive documentation on core, intermediate, and reporting models,
-          outlining their logic, dependencies, and applications.
-          - **Documentation:** Clear and detailed documentation is crucial for maintaining data quality and usability.
-          The catalog encompasses schema documentation, model descriptions, and code explanations,
-          making it easier for users to navigate and utilize our data resources.
-          - **Governance:** Effective data governance is integral to our data strategy.
-          The catalog includes information on data quality checks, version control, and access policies, ensuring data integrity and security.
-          EOF
-
-          # Create a .nojekyll file to bypass Jekyll processing
-          touch site/.nojekyll
-
-      - name: Generate docs
-        run: dbt docs generate
-        env:
-          DBT_ENV_SECRET_PASSWORD: ${{ secrets.DBT_ENV_SECRET_PASSWORD }}
-
-      - name: Prepare site files
-        run: |
-          cp target/index.html site/
-          cp target/manifest.json site/
-          cp target/catalog.json site/
-
-      - name: Deploy to GitHub Pages
+      - name: ⬆️ Commit Data Catalog for GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./site
-          # Ensure .nojekyll is added
-          enable_jekyll: false
+          publish_dir: docs
