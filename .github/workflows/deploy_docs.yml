@@ -31,11 +31,12 @@ jobs:
         run: |
           mkdir -p site
           cp -r target/. site/
-          touch site/.nojekyll  # This prevents GitHub Pages from using Jekyll
+          touch site/.nojekyll
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: site
-          force_orphan: true  # Creates a clean gh-pages branch
+          enable_jekyll: false
+          force_orphan: true
