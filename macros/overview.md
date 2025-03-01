@@ -1,4 +1,4 @@
-{% docs overview %}
+{% docs __overview__ %}
 
 # Katalkin Data Warehouse Catalog
 
