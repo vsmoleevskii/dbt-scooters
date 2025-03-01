@@ -9,5 +9,4 @@ dbt_scooters:
       threads: 4
       type: postgres
       user: admin
-
   target: dev
