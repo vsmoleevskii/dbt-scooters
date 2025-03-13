@@ -118,3 +118,38 @@ models:
     config:
       indexes:
         - columns: [date]
+
+  - name: "events_prep"
+    description: "User events prepared for following processing"
+    config:
+      materialized: "view"
+    columns:
+      - name: "date"
+        description: |
+          Date of event derived from timestamp.
+          Imitates Hive-styled partitioning of events by date.
+          It is needed for efficient incremental processing by engines
+          with partitioning support (i.e. Trino).
+
+  - name: "events_clean_v2"
+    description: "User events without duplicates"
+    config:
+      materialized: "incremental"
+      strategy: "merge"
+      unique_key: [ "user_id", "timestamp", "type_id" ]
+      meta:
+        incrementality:
+        start_date: "2023-06-01"
+        days_max: 60
+
+  - name: "sex_age_pivot"
+    description: "Pivot table to analyse number of trips per users sex"
+    data_tests:
+      - unique_key: 
+          columns: ["age"]
+
+    columns:
+      - name: "age"
+        description: "Numerical age of users"
+        data_tests: 
+          - "dbt_utils.not_constant"
