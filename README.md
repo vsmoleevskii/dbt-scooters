@@ -62,9 +62,9 @@ create extension postgis schema public
 
 ## Каталог данных
 
-Каталог dbt, который автоматически обновляется из ветки `main`:
+Каталог dbt, который автоматически обновляется из ветки `master`:
 
-https://inzhenerka.github.io/dbt-scooters
+https://vsmoleevskii.github.io/dbt-scooters/#!/overview/dbt_scooters
 
 2. Установите dbt и другие зависимости:
    
