@@ -111,6 +111,11 @@ models:
     config:
       materialized: "view"
 
+  - name: "events_stream"
+    description: "User events prepared for product analysis"
+    config:
+      materialized: "ephemeral"
+
   - name: "events_stat"
     description: "How many users reject due to long search"
   - name: "trips_age_groups"
@@ -158,3 +163,9 @@ models:
         description: "Numerical age of users"
         data_tests: 
           - "dbt_utils.not_constant"
+
+  - name: "book_scooter_retention"
+    description: >
+      Retention analytics from searching to booking a ride
+      on 1, 7, 14, 30 days
+

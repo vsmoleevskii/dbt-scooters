@@ -13,7 +13,7 @@
 
 select distinct
     user_id,
-    "timestamp",
+    timestamp,
     type_id,
     {{ updated_at() }},
     "date"
