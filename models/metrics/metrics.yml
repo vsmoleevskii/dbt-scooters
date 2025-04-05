@@ -1,0 +1,32 @@
+version: 2
+
+metrics:
+  - name: "revenue_avg"
+    label: "Average revenue"
+    description: "Average revenue for paid trips"
+    type: "simple"
+    type_params:
+      measure:
+        name: "revenue_avg"
+    filter: "{{ Dimension('trip__is_free') }} = false"
+    
+  - name: "revenue_cumsum"
+    label: "Cumulative revenue"
+    description: "Cumulative revenue (in rubles)"
+    type: "cumulative"
+    type_params:
+      measure:
+        name: "revenue_sum"
+    filter: "{{ Dimension('trip__is_free') }} = false"
+    
+  - name: "users_count_growth_mom"
+    label: "User total growth % M/M"
+    description: "Percentage growth of unique users to 1 month ago"
+    type: "derived"
+    type_params:
+      expr: "(users_count - users_count_prev_month) * 100.0 / users_count_prev_month"
+      metrics:
+        - name: "users_count"
+        - name: "users_count"
+          offset_window: "1 month"
+          alias: "users_count_prev_month"

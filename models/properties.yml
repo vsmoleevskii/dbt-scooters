@@ -169,3 +169,6 @@ models:
       Retention analytics from searching to booking a ride
       on 1, 7, 14, 30 days
 
+  - name: "metricflow_time_spine"
+    description: "Time spine calendar for metricflow"
+

@@ -1,0 +1,65 @@
+version: 2
+
+semantic_models:
+  - name: "trips_users_metrics"
+    description: "Trips with users metadata fact table"
+    model: "ref('trips_users')"
+    entities:
+      - name: "trip"
+        type: "primary"
+        expr: "id"
+      - name: "user"
+        type: "foreign"
+        expr: "user_id"
+      - name: "scooter"
+        type: "foreign"
+        expr: "scooter_hw_id"
+    dimensions:
+      - name: "sex"
+        type: "categorical"
+      - name: "age"
+        type: "categorical"
+      - name: "is_free"
+        type: "categorical"
+      - name: "started_at"
+        type: "time"
+        expr: "date(started_at)"
+        type_params:
+          time_granularity: "day"
+      - name: "finished_date"
+        type: "time"
+        expr: "date(finished_at)"
+        type_params:
+          time_granularity: "day"
+    defaults:
+      agg_time_dimension: "started_at"
+    measures:
+      - name: "revenue_sum"
+        description: "The total amount of revenue (in rubles)"
+        agg: "sum"
+        expr: "price_rub"
+        create_metric: True
+      - name: "trips_count"
+        description: "The total number of trips"
+        expr: "1"
+        agg: "sum"
+        create_metric: True
+      - name: "users_count"
+        description: "The total number of unique users"
+        agg: "count_distinct"
+        expr: "user_id"
+        create_metric: True
+      - name: "revenue_avg"
+        description: "Average revenue (in rubles)"
+        agg: "average"
+        expr: "price_rub"
+      - name: "free_trips_count"
+        description: "The total number free of charge trips"
+        agg: "sum_boolean"
+        expr: "is_free"
+        create_metric: True
+      - name: "duration_m_median"
+        description: "Median duration of trip in minutes"
+        agg: "median"
+        expr: "duration_s / 60.0"
+        create_metric: True
