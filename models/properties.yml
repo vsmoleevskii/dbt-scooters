@@ -221,6 +221,34 @@ models:
      - number of users per each group
      - total number of users for information and validation
 
+  - name: "trips_age_sex_report"
+    description: "Compute trips statistics in time by age and gender of user"
+    arguments:
+      - name: "trips_table"
+        type: "string"
+        description: "Table with source trips data enriched with user data"
+      - name: "granularity"
+        type: "string"
+        description: "Time granularity for report (daily/weekly/monthly)"
+
+  - name: "trips_age_sex_daily"
+    description: "Daily trips statistics by user age and gender"
+    data_tests:
+      - unique_key:
+          columns: [ "date", "age", "sex" ]
+
+  - name: "trips_age_sex_weekly"
+    description: "Weekly trips statistics by user age and gender"
+    data_tests:
+      - unique_key:
+          columns: [ "week", "age", "sex" ]
+
+  - name: "trips_age_sex_monthly"
+    description: "Monthly trips statistics by user age and gender"
+    data_tests:
+      - unique_key:
+          columns: [ "month", "age", "sex" ]
+
 
 
 
