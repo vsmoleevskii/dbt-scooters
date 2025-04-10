@@ -22,6 +22,33 @@ models:
         description: "Last row update"
         data_type: "timestamptz"
 
+  - name: "revenue_user_monthly"
+    description: "Monthly total revenue by user (excl. free trips)"
+    data_tests:
+      - unique_key: 
+          columns: ["user_id", "month"]
+
+  - name: "revenue_monthly"
+    description: "Monthly revenue statistics (excl. free trips)"
+    data_tests:
+      - unique_key: 
+          columns: ["month"]
+      - dbt_utils.expression_is_true:
+          expression: "not(users < 1000 or revenue_median < 500)"
+
+  - name: "revenue_monthly_report"
+    description: "Monthly revenue report"
+    config:
+      materialized: "incremental"
+      strategy: "append"
+      on_schema_change: "append_new_columns"
+      full_refresh: false
+    data_tests:
+      - unique_key:
+          columns: [ "month" ]
+
+
+
 exposures:
   - name: "financial_dashboard"
     label: "Financial Dashboard"
@@ -33,3 +60,4 @@ exposures:
     owner:
       name: "Finance department"
 
+  
