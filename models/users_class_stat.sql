@@ -6,4 +6,4 @@ select
     count(no_class or null) as no_class_count,
     count(*) as total_count
 from
-    {{ref('users_class')}}
+    {{ ref('users_class') }}

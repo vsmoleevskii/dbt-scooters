@@ -1,4 +1,4 @@
-select 
+select
     date,
     age,
     count(*) as trips,

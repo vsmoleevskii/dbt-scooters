@@ -1,5 +1,5 @@
-with monthly_stat_cte as(
-  /* Для каждого пользователя находим месячную статистику поездок:
+with monthly_stat_cte as (
+    /* Для каждого пользователя находим месячную статистику поездок:
       trips_per_month - количество поездок в месяц */
     select
         user_id,
@@ -11,12 +11,13 @@ with monthly_stat_cte as(
         1,
         2
 )
+
 select
 /* Классификация пользователей по количеству поездок в месяц:
-  rare - редкие/разовые поездки, не более 2 поездок в месяц */
+    rare - редкие/разовые поездки, не более 2 поездок в месяц */
     user_id,
     sum(trips_per_month) <= 2 as rare
-from 
+from
     monthly_stat_cte
 group by
     1
