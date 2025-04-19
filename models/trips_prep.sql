@@ -11,6 +11,6 @@ select
     distance as distance_m,
     CAST(price / 100.00 as DECIMAL(20, 2)) as price_rub,
     EXTRACT(epoch from (finished_at - started_at)) as duration_s,
-    finished_at <> started_at and price = 0 is_free,
+    finished_at <> started_at and price = 0 as is_free,
     {{ date_in_moscow('started_at') }} as "date"
 from {{ source("scooters_raw", "trips") }}
