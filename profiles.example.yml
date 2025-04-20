@@ -1,7 +1,7 @@
 dbt_scooters:
   outputs:
     dev:
-      dbname: dev_4j91
+      dbname: dev_4j9l
       host: dpg-ct67svbqf0us738cs6dg-a.frankfurt-postgres.render.com
       pass: "{{ env_var('DBT_ENV_SECRET_PASSWORD') }}"
       port: 5432
@@ -11,7 +11,7 @@ dbt_scooters:
       user: admin
     
     prod:
-      dbname: dev_4j91
+      dbname: dev_4j9l
       host: dpg-ct67svbqf0us738cs6dg-a.frankfurt-postgres.render.com
       pass: "{{ env_var('DBT_ENV_SECRET_PASSWORD') }}"
       port: 5432
