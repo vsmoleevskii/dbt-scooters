@@ -3,9 +3,10 @@ select distinct
     user_id,
     timestamp,
     type_id,
-    {{ updated_at() }}
+    {{ updated_at() }},
+    "date"
 from
-    {{ source("scooters_raw", "events") }}
+    {{ ref("events_prep") }}
 where
     {% if is_incremental() %}
         {% if date %}
