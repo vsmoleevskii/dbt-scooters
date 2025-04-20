@@ -47,6 +47,9 @@ models:
       - unique_key:
           columns: [ "month" ]
 
+  - name: "revenue_daily_stat"
+    description: "Overall daily revenue statistics"
+
 
 
 exposures:
